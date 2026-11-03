@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>跳转中…</title>
+
+<!-- 👇 1. 输入网址（引用标签） -->
+
+
+<base href="https://linggong-demo-stagin-d9a8a5afffb-1524103258.tcloudbaseapp.com">
+
+
+
+<!-- 👇 2. 备用：如果 JS 被禁用，读取这个纯 HTML 跳转（url=./ 会自动指向上面 base 的网址） -->
+<noscript>
+  <meta http-equiv="refresh" content="0;url=./">
+</noscript>
+
+<!-- 👇 3. 主力：正常情况用 JS 瞬间替换页面（无历史记录，读取 base 的网址） -->
+<script>
+  location.replace(document.baseURI);
+</script>
+
+</head>
+<body style="margin:0;background:#0f1115"></body>
+</html>
