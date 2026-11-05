@@ -2,6 +2,387 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>功能演示</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  :root{
+    --bg: #f4f7fc;
+    --text: #1e293b;
+    --muted: #64748b;
+    --primary-gradient: linear-gradient(135deg, #7b9efb 0%, #5477f2 100%);
+  }
+
+  html{
+    scroll-behavior:smooth;
+    -webkit-text-size-adjust:100%;
+  }
+
+  body{
+    min-height:100vh;
+    background-color:var(--bg);
+    background-image: radial-gradient(circle at 50% 0%, #ffffff 0%, transparent 70%);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    -webkit-font-smoothing:antialiased;
+    
+    /* 上下留白，左右安全区 */
+    padding: 64px 16px 48px;
+    overflow-x: hidden; 
+    -webkit-tap-highlight-color:transparent;
+  }
+
+  /* ====================================================
+     核心调整：整体容器宽度大幅缩减，控制在 360px 以内
+     ==================================================== */
+  .wrap{
+    width:100%;
+    max-width:360px; /* 缩减到只有原来 2/3 的宽度 */
+    margin:0 auto;
+  }
+
+  /* ---------- 头部标题 ---------- */
+  .hero{
+    text-align:center;
+    margin-bottom:36px;
+  }
+
+  .hero h1{
+    font-size:24px;
+    font-weight:700;
+    letter-spacing:1px;
+    color:var(--text);
+  }
+
+  /* ---------- 分区 ---------- */
+  .section{margin-bottom:32px}
+
+  .section-title{
+    font-size:14px;
+    font-weight:600;
+    color:var(--muted);
+    margin-bottom:12px;
+    padding-left:6px; /* 与左侧圆角对齐 */
+  }
+
+  /* ---------- 列表 ---------- */
+  .list{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+
+  /* 外层包裹：处理弥散阴影 */
+  .btn-wrapper{
+    filter: drop-shadow(0 4px 12px rgba(100, 120, 150, 0.08));
+    flex-shrink: 0; 
+  }
+
+  /* ---------- 按钮主体 ---------- */
+  .btn{
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 14px 16px; /* 稍微压缩一点内边距配合窄宽度 */
+    background: #ffffff;
+    text-decoration: none;
+    color: inherit;
+    /* 保持右侧尖角箭头效果 */
+    clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 0 100%);
+    border-radius: 12px 0 0 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    touch-action: manipulation;
+  }
+
+  /* 图标容器 */
+  .icon-box{
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    background: var(--icon-bg);
+    color: var(--icon-color);
+    transition: all 0.3s ease;
+  }
+
+  .icon-box svg{
+    width: 18px;
+    height: 18px;
+  }
+
+  /* 文字内容区 */
+  .content{
+    margin-left: 12px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .title-row{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 2px;
+  }
+
+  .content h3{
+    font-size: 14px; /* 字体稍微调小，适应窄边 */
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.3s;
+  }
+
+  /* 标签 */
+  .tag{
+    font-size: 10px;
+    font-weight: 500;
+    padding: 2px 5px;
+    border-radius: 4px;
+    background: #f1f5f9;
+    color: var(--muted);
+    border: 1px solid #e2e8f0;
+    flex-shrink: 0;
+    transition: all 0.3s;
+  }
+
+  .desc{
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.3s;
+  }
+
+  /* 右侧箭头 */
+  .arrow{
+    display: flex;
+    color: #cbd5e1;
+    margin-left: 8px;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+  }
+
+  .arrow svg{
+    width: 14px;
+    height: 14px;
+  }
+
+  /* ====================================================
+     悬停 / 激活态
+     ==================================================== */
+  @media (hover: hover) and (pointer: fine) {
+    .btn-wrapper:hover {
+      filter: drop-shadow(0 8px 20px rgba(84, 119, 242, 0.35));
+    }
+    .btn-wrapper:hover .btn {
+      background: var(--primary-gradient);
+      transform: translateX(4px); 
+    }
+    .btn-wrapper:hover .icon-box {
+      background: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+    }
+    .btn-wrapper:hover .content h3,
+    .btn-wrapper:hover .desc,
+    .btn-wrapper:hover .arrow {
+      color: #ffffff;
+    }
+    .btn-wrapper:hover .arrow {
+      transform: translateX(2px);
+    }
+    .btn-wrapper:hover .tag {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+    }
+  }
+
+  /* 触摸按压态 */
+  .btn:active {
+    transform: scale(0.98) translateX(2px);
+  }
+
+  .btn:focus-visible {
+    outline: 2px solid #5477f2;
+    outline-offset: 2px;
+  }
+
+  /* ---------- 页脚 ---------- */
+  .foot{
+    margin-top: 48px;
+    text-align: center;
+    font-size: 12px;
+    color: #94a3b8;
+  }
+
+  /* ====================================================
+     手机端适配
+     ==================================================== */
+  @media (max-width: 640px) {
+    body { 
+      padding: 40px 16px 32px; 
+    }
+    
+    .hero { margin-bottom: 28px; }
+    .hero h1 { font-size: 22px; }
+    
+    /* 在屏幕极窄的时候依然保持居中自适应 */
+    .wrap {
+      max-width: 330px; 
+    }
+    
+    /* 手机端隐藏标签，让标题能完整显示 */
+    .tag { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<main class="wrap">
+
+  <header class="hero">
+    <h1>功能演示</h1>
+  </header>
+
+  <!-- ============ 零工市场 ============ -->
+  <section class="section">
+    <h2 class="section-title">零工市场</h2>
+
+    <div class="list">
+
+      <div class="btn-wrapper">
+        <a class="btn" href="https://linggong-demo-stagin-d9a8a5afffb-1524103258.tcloudbaseapp.com" target="_blank" rel="noopener noreferrer">
+          <div class="icon-box" style="--icon-bg: #eff6ff; --icon-color: #3b82f6;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18.5h3"/>
+            </svg>
+          </div>
+          <div class="content">
+            <div class="title-row">
+              <h3>才耀 · 总部 App</h3>
+              <span class="tag">App</span>
+            </div>
+            <div class="desc">总部端 App 集合各地功能演示</div>
+          </div>
+          <div class="arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </div>
+        </a>
+      </div>
+
+      <div class="btn-wrapper">
+        <a class="btn" href="https://linggong-demo-stagin-d9a8a5afffb-1524103258.tcloudbaseapp.com" target="_blank" rel="noopener noreferrer">
+          <div class="icon-box" style="--icon-bg: #ecfdf5; --icon-color: #10b981;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8.5 3.5h7a1.5 1.5 0 0 1 1.5 1.5v14a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 7 19V5a1.5 1.5 0 0 1 1.5-1.5Z"/><path d="M10 6h4M10 18h4"/>
+            </svg>
+          </div>
+          <div class="content">
+            <div class="title-row">
+              <h3>属地 · 微信小程序</h3>
+              <span class="tag">小程序</span>
+            </div>
+            <div class="desc">登封/航空港/南阳...属地小程序端演示</div>
+          </div>
+          <div class="arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </div>
+        </a>
+      </div>
+
+      <div class="btn-wrapper">
+        <a class="btn" href="https://adx5.pythonanywhere.com/" target="_blank" rel="noopener noreferrer">
+          <div class="icon-box" style="--icon-bg: #fffbeb; --icon-color: #f59e0b;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 3.5h8.5L19 8v12.5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-16a1 1 0 0 1 1-1Z"/><path d="M14 3.5V8h4.5M8.5 13h7M8.5 17h4.5"/>
+            </svg>
+          </div>
+          <div class="content">
+            <div class="title-row">
+              <h3>新媒体发布评审系统</h3>
+              <span class="tag">全自动出片评审系统</span>
+            </div>
+            <div class="desc">新媒体Ai全流程内容制作，发布与评审流程演示</div>
+          </div>
+          <div class="arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </div>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ 其他项目 ============ -->
+  <section class="section">
+    <h2 class="section-title">其他项目演示</h2>
+
+    <div class="list">
+
+      <div class="btn-wrapper">
+        <a class="btn" href="https://adx5.github.io/xinghuo-platform/" target="_blank" rel="noopener noreferrer">
+          <div class="icon-box" style="--icon-bg: #f5f3ff; --icon-color: #8b5cf6;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="2.4"/><circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="5" cy="18" r="2"/><circle cx="19" cy="18" r="2"/>
+              <path d="M6.6 7.3 10 10.4M17.4 7.3 14 10.4M6.6 16.7 10 13.6M17.4 16.7 14 13.6"/>
+            </svg>
+          </div>
+          <div class="content">
+            <div class="title-row">
+              <h3>普耀 · 星火引力</h3>
+              <span class="tag">AI 商业匹配</span>
+            </div>
+            <div class="desc">商业资源对接平台 · AI 大模型精准匹配</div>
+          </div>
+          <div class="arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </div>
+        </a>
+      </div>
+
+      <div class="btn-wrapper">
+        <a class="btn" href="https://adx5.github.io/lisongyue-songshan/" target="_blank" rel="noopener noreferrer">
+          <div class="icon-box" style="--icon-bg: #ecfeff; --icon-color: #06b6d4;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2.5 19h19L15 6.5l-3.4 6-2.4-3.6L2.5 19Z"/><path d="M11.2 19l2.6-4.2 2 2.8"/>
+            </svg>
+          </div>
+          <div class="content">
+            <div class="title-row">
+              <h3>嵩玉 · 天地之中</h3>
+              <span class="tag">Ai文旅行囊</span>
+            </div>
+            <div class="desc">嵩山人文志 · 嵩山文旅资源对接平台</div>
+          </div>
+          <div class="arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </div>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+
+  <p class="foot">© 2026 系统测试 · 演示入口 </p>
+
+</main>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>演示入口 · 系统测试</title>
 <style>
