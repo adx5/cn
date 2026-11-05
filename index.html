@@ -4,34 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>演示入口 · 系统测试</title>
-
-<script>
-/* ============================================================
-   跳转核心
-   1) 每张卡片链接为 ?to=key
-   2) JS 正常时：location.replace(目标) —— 瞬间跳转，无历史记录
-   3) JS 被禁用时：由 <noscript> 中的纯 HTML 链接手动跳转
-   ============================================================ */
-(function () {
-  var TARGETS = {
-    linggong: 'https://linggong-demo-stagin-d9a8a5afffb-1524103258.tcloudbaseapp.com',
-    review:   'https://adx5.pythonanywhere.com/',
-    xinghuo:  'https://xinghuoyinli.de5.net/',
-    songshan: 'https://adx5.github.io/lisongyue-songshan/'
-  };
-
-  var m = location.search.match(/[?&]to=([^&]+)/);
-  if (!m) return;
-
-  var key = decodeURIComponent(m[1]);
-  var url = TARGETS[key] || key;
-
-  if (/^https?:\/\//i.test(url)) {
-    location.replace(url);   // 主力跳转：无历史记录
-  }
-})();
-</script>
-
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
 
@@ -201,7 +173,6 @@
   }
   .card p{
     font-size:13.5px;color:var(--muted);line-height:1.65;
-    margin-bottom:18px;
   }
 
   .card-foot{
@@ -209,6 +180,8 @@
     display:flex;align-items:center;justify-content:space-between;gap:12px;
     border-top:1px solid var(--line);
   }
+  .card-head + h3{margin-top:0}
+  .card p{margin-bottom:18px}
 
   .host{
     font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
@@ -226,22 +199,6 @@
     margin-top:56px;text-align:center;
     font-size:12.5px;color:#5f687c;line-height:1.8;
   }
-
-  /* noscript 备用提示 */
-  .noscript{
-    position:relative;z-index:2;
-    max-width:1040px;margin:0 auto 32px;
-    padding:18px 20px;
-    border-radius:14px;
-    background:rgba(245,158,11,.08);
-    border:1px solid rgba(245,158,11,.28);
-    color:#f3d9a6;
-    font-size:13.5px;line-height:1.7;
-  }
-  .noscript strong{color:#ffe9c2}
-  .noscript ul{margin:10px 0 0 18px}
-  .noscript li{margin:4px 0}
-  .noscript a{color:#ffd98a;text-decoration:underline;text-underline-offset:3px}
 
   /* 入场动画 */
   @keyframes rise{
@@ -276,25 +233,6 @@
 </head>
 <body>
 
-<!-- ============================================================
-     备用：如果 JS 被禁用，展示纯 HTML 手动跳转链接
-     说明：多入口场景下无法用一条 meta refresh 覆盖全部目标，
-     因此这里为每个项目提供独立可点的纯 HTML 链接。
-     ============================================================ -->
-<noscript>
-  <div class="noscript">
-    <strong>当前浏览器禁用了 JavaScript，无法自动跳转。</strong><br>
-    请手动选择要访问的演示环境：
-    <ul>
-      <li><a href="https://linggong-demo-stagin-d9a8a5afffb-1524103258.tcloudbaseapp.com">零工市场 · 总部 App</a></li>
-      <li><a href="https://linggong-demo-stagin-d9a8a5afffb-1524103258.tcloudbaseapp.com">零工市场 · 属地微信小程序</a></li>
-      <li><a href="https://adx5.pythonanywhere.com/">零工市场 · 新媒体发布评审系统</a></li>
-      <li><a href="https://xinghuoyinli.de5.net/">普耀 · 星火引力</a></li>
-      <li><a href="https://adx5.github.io/lisongyue-songshan/">嵩玉 · 天地之中</a></li>
-    </ul>
-  </div>
-</noscript>
-
 <div class="orb orb-a"></div>
 <div class="orb orb-b"></div>
 <div class="orb orb-c"></div>
@@ -304,7 +242,7 @@
   <header class="hero">
     <span class="badge"><span class="dot"></span>系统测试 · 演示入口</span>
     <h1>请选择要访问的演示环境</h1>
-    <p>共 5 个演示项目 · 点击卡片瞬间跳转</p>
+    <p>共 5 个演示项目 · 点击卡片将在新窗口打开</p>
   </header>
 
   <!-- ============ 零工市场 ============ -->
@@ -313,7 +251,9 @@
 
     <div class="grid">
 
-      <a class="card" style="--accent:#4f7cff" href="?to=linggong">
+      <a class="card" style="--accent:#4f7cff"
+         href="https://linggong-demo-stagin-d9a8a5afffb-1524103258.tcloudbaseapp.com"
+         target="_blank" rel="noopener noreferrer">
         <div class="card-head">
           <div class="icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
@@ -324,7 +264,7 @@
           </div>
           <span class="tag">App</span>
         </div>
-        <h3>零工市场 · 总部 App</h3>
+        <h3>才耀 · 零工市场总部 App</h3>
         <p>总部端 App 功能演示环境</p>
         <div class="card-foot">
           <span class="host">linggong-demo-stagin…tcloudbaseapp.com</span>
@@ -337,7 +277,9 @@
         </div>
       </a>
 
-      <a class="card" style="--accent:#22c55e" href="?to=linggong">
+      <a class="card" style="--accent:#22c55e"
+         href="https://linggong-demo-stagin-d9a8a5afffb-1524103258.tcloudbaseapp.com"
+         target="_blank" rel="noopener noreferrer">
         <div class="card-head">
           <div class="icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
@@ -361,7 +303,9 @@
         </div>
       </a>
 
-      <a class="card" style="--accent:#f59e0b" href="?to=review">
+      <a class="card" style="--accent:#f59e0b"
+         href="https://adx5.pythonanywhere.com/"
+         target="_blank" rel="noopener noreferrer">
         <div class="card-head">
           <div class="icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
@@ -394,7 +338,9 @@
 
     <div class="grid">
 
-      <a class="card" style="--accent:#a855f7" href="?to=xinghuo">
+      <a class="card" style="--accent:#a855f7"
+         href="https://xinghuoyinli.de5.net/"
+         target="_blank" rel="noopener noreferrer">
         <div class="card-head">
           <div class="icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
@@ -422,7 +368,9 @@
         </div>
       </a>
 
-      <a class="card" style="--accent:#06b6d4" href="?to=songshan">
+      <a class="card" style="--accent:#06b6d4"
+         href="https://adx5.github.io/lisongyue-songshan/"
+         target="_blank" rel="noopener noreferrer">
         <div class="card-head">
           <div class="icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
@@ -433,8 +381,8 @@
           </div>
           <span class="tag">文旅</span>
         </div>
-        <h3>嵩玉 · 嵩山人文志</h3>
-        <p> 天地之中· 嵩山文旅资源对接平台（AI 大模型精准匹配）</p>
+        <h3>嵩玉 · 天地之中</h3>
+        <p>嵩山人文志 · 嵩山文旅资源对接平台</p>
         <div class="card-foot">
           <span class="host">adx5.github.io / lisongyue-songshan</span>
           <span class="arrow">
@@ -452,6 +400,14 @@
   <p class="foot">© 2026 系统测试 · 演示入口</p>
 
 </main>
+
+<!-- ================= 可选：自动跳转 =================
+     如果确实需要一个「打开即跳转」的入口页，
+     把下面注释打开、换成目标地址即可（不会产生历史记录）：
+
+<script>location.replace('https://linggong-demo-stagin-d9a8a5afffb-1524103258.tcloudbaseapp.com');</script>
+
+==================================================== -->
 
 </body>
 </html>
