@@ -3,25 +3,455 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title> 【 系统测试 】跳转中…</title>
+<title>演示入口 · 系统测试</title>
 
-<!-- 👇 1. 输入网址（引用标签） -->
-
-
-<base href="https://linggong-demo-stagin-d9a8a5afffb-1524103258.tcloudbaseapp.com">
-
-
-
-<!-- 👇 2. 备用：如果 JS 被禁用，读取这个纯 HTML 跳转（url=./ 会自动指向上面 base 的网址） -->
-<noscript>
-  <meta http-equiv="refresh" content="0;url=./">
-</noscript>
-
-<!-- 👇 3. 主力：正常情况用 JS 瞬间替换页面（无历史记录，读取 base 的网址） -->
 <script>
-  location.replace(document.baseURI);
+/* ============================================================
+   跳转核心
+   1) 每张卡片链接为 ?to=key
+   2) JS 正常时：location.replace(目标) —— 瞬间跳转，无历史记录
+   3) JS 被禁用时：由 <noscript> 中的纯 HTML 链接手动跳转
+   ============================================================ */
+(function () {
+  var TARGETS = {
+    linggong: 'https://linggong-demo-stagin-d9a8a5afffb-1524103258.tcloudbaseapp.com',
+    review:   'https://adx5.pythonanywhere.com/',
+    xinghuo:  'https://xinghuoyinli.de5.net/',
+    songshan: 'https://adx5.github.io/lisongyue-songshan/'
+  };
+
+  var m = location.search.match(/[?&]to=([^&]+)/);
+  if (!m) return;
+
+  var key = decodeURIComponent(m[1]);
+  var url = TARGETS[key] || key;
+
+  if (/^https?:\/\//i.test(url)) {
+    location.replace(url);   // 主力跳转：无历史记录
+  }
+})();
 </script>
 
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  :root{
+    --bg:#080a0f;
+    --text:#eaeefb;
+    --muted:#8d96ad;
+    --line:rgba(255,255,255,.08);
+  }
+
+  html{scroll-behavior:smooth}
+
+  body{
+    min-height:100vh;
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding:72px 20px 56px;
+    position:relative;
+    overflow-x:hidden;
+  }
+
+  /* 背景：网格 + 光晕 */
+  body::before{
+    content:"";
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:
+      linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
+    background-size:64px 64px;
+    -webkit-mask-image:radial-gradient(ellipse at 50% 0%,#000 15%,transparent 72%);
+            mask-image:radial-gradient(ellipse at 50% 0%,#000 15%,transparent 72%);
+  }
+
+  .orb{
+    position:fixed;border-radius:50%;filter:blur(100px);
+    pointer-events:none;z-index:0;
+  }
+  .orb-a{width:560px;height:560px;background:#2a4bff;opacity:.42;top:-200px;left:-140px;animation:float 16s ease-in-out infinite}
+  .orb-b{width:500px;height:500px;background:#8b2fff;opacity:.35;bottom:-220px;right:-140px;animation:float 20s ease-in-out infinite reverse}
+  .orb-c{width:360px;height:360px;background:#00c2a8;opacity:.16;top:38%;left:58%;animation:float 26s ease-in-out infinite}
+
+  @keyframes float{
+    50%{transform:translate3d(46px,34px,0) scale(1.12)}
+  }
+
+  .wrap{
+    position:relative;z-index:1;
+    width:100%;max-width:1040px;margin:0 auto;
+  }
+
+  /* 头部 */
+  .hero{text-align:center;margin-bottom:56px}
+
+  .badge{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:7px 15px;border-radius:999px;
+    font-size:12.5px;letter-spacing:.04em;color:#b9c2d8;
+    background:rgba(255,255,255,.04);
+    border:1px solid var(--line);
+    backdrop-filter:blur(8px);
+  }
+  .badge .dot{
+    width:6px;height:6px;border-radius:50%;background:#3ddc97;
+    box-shadow:0 0 0 0 rgba(61,220,151,.55);
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    70%{box-shadow:0 0 0 8px rgba(61,220,151,0)}
+    100%{box-shadow:0 0 0 0 rgba(61,220,151,0)}
+  }
+
+  .hero h1{
+    margin:22px 0 14px;
+    font-size:clamp(26px,4.4vw,40px);
+    font-weight:650;
+    line-height:1.25;
+    letter-spacing:-.01em;
+    background:linear-gradient(180deg,#ffffff 20%,#a8b3cc 100%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .hero p{
+    font-size:14.5px;color:var(--muted);line-height:1.7;
+  }
+
+  /* 分区 */
+  .section{margin-bottom:40px}
+
+  .section-title{
+    display:flex;align-items:center;gap:12px;
+    font-size:13px;font-weight:500;letter-spacing:.12em;
+    text-transform:uppercase;color:#7d869c;
+    margin-bottom:18px;padding-left:2px;
+  }
+  .section-title .idx{
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-size:11px;color:#5a6478;
+    border:1px solid var(--line);
+    border-radius:6px;padding:2px 6px;
+  }
+  .section-title::after{
+    content:"";flex:1;height:1px;
+    background:linear-gradient(90deg,var(--line),transparent);
+  }
+
+  /* 卡片网格 */
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(290px,1fr));
+    gap:16px;
+  }
+
+  .card{
+    position:relative;overflow:hidden;
+    display:flex;flex-direction:column;
+    padding:20px 22px 18px;
+    border-radius:18px;
+    text-decoration:none;color:inherit;
+    background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.02));
+    border:1px solid var(--line);
+    transition:transform .4s cubic-bezier(.2,.9,.25,1),
+               border-color .4s ease,
+               box-shadow .4s ease,
+               background .4s ease;
+  }
+  .card::after{
+    content:"";position:absolute;inset:0;border-radius:inherit;
+    background:radial-gradient(420px circle at 50% -10%,var(--accent),transparent 62%);
+    opacity:0;transition:opacity .45s ease;
+    pointer-events:none;
+  }
+  .card:hover,.card:focus-visible{
+    transform:translateY(-6px);
+    border-color:rgba(255,255,255,.16);
+    background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.025));
+    box-shadow:0 26px 48px -26px rgba(0,0,0,.95);
+    outline:none;
+  }
+  .card:hover::after,.card:focus-visible::after{opacity:.13}
+
+  .card-head{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:12px;margin-bottom:18px;
+  }
+
+  .icon{
+    width:42px;height:42px;border-radius:13px;flex:none;
+    display:grid;place-items:center;color:#fff;
+    background:var(--accent);
+    box-shadow:0 12px 26px -14px var(--accent),
+               inset 0 1px 0 rgba(255,255,255,.35);
+  }
+  .icon svg{width:21px;height:21px}
+
+  .tag{
+    font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+    color:#98a2b8;padding:4px 9px;border-radius:999px;
+    background:rgba(255,255,255,.03);
+    border:1px solid var(--line);
+  }
+
+  .card h3{
+    font-size:16.5px;font-weight:600;line-height:1.45;
+    letter-spacing:.01em;margin-bottom:7px;
+  }
+  .card p{
+    font-size:13.5px;color:var(--muted);line-height:1.65;
+    margin-bottom:18px;
+  }
+
+  .card-foot{
+    margin-top:auto;padding-top:16px;
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    border-top:1px solid var(--line);
+  }
+
+  .host{
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-size:11.5px;color:#6f7891;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .arrow{
+    flex:none;display:flex;color:#7d869c;
+    transition:transform .35s cubic-bezier(.2,.9,.25,1),color .35s;
+  }
+  .card:hover .arrow{transform:translateX(5px);color:var(--accent)}
+
+  /* 页脚 */
+  .foot{
+    margin-top:56px;text-align:center;
+    font-size:12.5px;color:#5f687c;line-height:1.8;
+  }
+
+  /* noscript 备用提示 */
+  .noscript{
+    position:relative;z-index:2;
+    max-width:1040px;margin:0 auto 32px;
+    padding:18px 20px;
+    border-radius:14px;
+    background:rgba(245,158,11,.08);
+    border:1px solid rgba(245,158,11,.28);
+    color:#f3d9a6;
+    font-size:13.5px;line-height:1.7;
+  }
+  .noscript strong{color:#ffe9c2}
+  .noscript ul{margin:10px 0 0 18px}
+  .noscript li{margin:4px 0}
+  .noscript a{color:#ffd98a;text-decoration:underline;text-underline-offset:3px}
+
+  /* 入场动画 */
+  @keyframes rise{
+    from{opacity:0;transform:translateY(16px)}
+    to{opacity:1;transform:none}
+  }
+  .hero > *,.section-title,.card{
+    animation:rise .75s cubic-bezier(.2,.8,.25,1) both;
+  }
+  .hero > *:nth-child(1){animation-delay:.05s}
+  .hero > *:nth-child(2){animation-delay:.11s}
+  .hero > *:nth-child(3){animation-delay:.17s}
+  .section:nth-of-type(1) .section-title{animation-delay:.22s}
+  .section:nth-of-type(2) .section-title{animation-delay:.40s}
+  .grid .card:nth-child(1){animation-delay:.26s}
+  .grid .card:nth-child(2){animation-delay:.32s}
+  .grid .card:nth-child(3){animation-delay:.38s}
+  .section:nth-of-type(2) .grid .card:nth-child(1){animation-delay:.44s}
+  .section:nth-of-type(2) .grid .card:nth-child(2){animation-delay:.50s}
+
+  @media (max-width:640px){
+    body{padding:48px 16px 40px}
+    .hero{margin-bottom:40px}
+    .grid{grid-template-columns:1fr}
+    .card{padding:18px 18px 16px}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+  }
+</style>
 </head>
-<body style="margin:0;background:#0f1115"></body>
+<body>
+
+<!-- ============================================================
+     备用：如果 JS 被禁用，展示纯 HTML 手动跳转链接
+     说明：多入口场景下无法用一条 meta refresh 覆盖全部目标，
+     因此这里为每个项目提供独立可点的纯 HTML 链接。
+     ============================================================ -->
+<noscript>
+  <div class="noscript">
+    <strong>当前浏览器禁用了 JavaScript，无法自动跳转。</strong><br>
+    请手动选择要访问的演示环境：
+    <ul>
+      <li><a href="https://linggong-demo-stagin-d9a8a5afffb-1524103258.tcloudbaseapp.com">零工市场 · 总部 App</a></li>
+      <li><a href="https://linggong-demo-stagin-d9a8a5afffb-1524103258.tcloudbaseapp.com">零工市场 · 属地微信小程序</a></li>
+      <li><a href="https://adx5.pythonanywhere.com/">零工市场 · 新媒体发布评审系统</a></li>
+      <li><a href="https://xinghuoyinli.de5.net/">普耀 · 星火引力</a></li>
+      <li><a href="https://adx5.github.io/lisongyue-songshan/">嵩玉 · 天地之中</a></li>
+    </ul>
+  </div>
+</noscript>
+
+<div class="orb orb-a"></div>
+<div class="orb orb-b"></div>
+<div class="orb orb-c"></div>
+
+<main class="wrap">
+
+  <header class="hero">
+    <span class="badge"><span class="dot"></span>系统测试 · 演示入口</span>
+    <h1>请选择要访问的演示环境</h1>
+    <p>共 5 个演示项目 · 点击卡片瞬间跳转</p>
+  </header>
+
+  <!-- ============ 零工市场 ============ -->
+  <section class="section">
+    <h2 class="section-title"><span class="idx">01</span>零工市场</h2>
+
+    <div class="grid">
+
+      <a class="card" style="--accent:#4f7cff" href="?to=linggong">
+        <div class="card-head">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <rect x="6" y="2.5" width="12" height="19" rx="3"/>
+              <path d="M10.5 18.5h3"/>
+            </svg>
+          </div>
+          <span class="tag">App</span>
+        </div>
+        <h3>零工市场 · 总部 App</h3>
+        <p>总部端 App 功能演示环境</p>
+        <div class="card-foot">
+          <span class="host">linggong-demo-stagin…tcloudbaseapp.com</span>
+          <span class="arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </span>
+        </div>
+      </a>
+
+      <a class="card" style="--accent:#22c55e" href="?to=linggong">
+        <div class="card-head">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8.5 3.5h7a1.5 1.5 0 0 1 1.5 1.5v14a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 7 19V5a1.5 1.5 0 0 1 1.5-1.5Z"/>
+              <path d="M10 6h4M10 18h4"/>
+            </svg>
+          </div>
+          <span class="tag">小程序</span>
+        </div>
+        <h3>零工市场 · 属地微信小程序</h3>
+        <p>属地微信小程序端演示环境</p>
+        <div class="card-foot">
+          <span class="host">linggong-demo-stagin…tcloudbaseapp.com</span>
+          <span class="arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </span>
+        </div>
+      </a>
+
+      <a class="card" style="--accent:#f59e0b" href="?to=review">
+        <div class="card-head">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 3.5h8.5L19 8v12.5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-16a1 1 0 0 1 1-1Z"/>
+              <path d="M14 3.5V8h4.5M8.5 13h7M8.5 17h4.5"/>
+            </svg>
+          </div>
+          <span class="tag">评审系统</span>
+        </div>
+        <h3>零工市场 · 新媒体发布评审系统</h3>
+        <p>新媒体内容发布与评审流程演示</p>
+        <div class="card-foot">
+          <span class="host">adx5.pythonanywhere.com</span>
+          <span class="arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ============ 其他项目 ============ -->
+  <section class="section">
+    <h2 class="section-title"><span class="idx">02</span>其他项目演示</h2>
+
+    <div class="grid">
+
+      <a class="card" style="--accent:#a855f7" href="?to=xinghuo">
+        <div class="card-head">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="2.4"/>
+              <circle cx="5" cy="6" r="2"/>
+              <circle cx="19" cy="6" r="2"/>
+              <circle cx="5" cy="18" r="2"/>
+              <circle cx="19" cy="18" r="2"/>
+              <path d="M6.6 7.3 10 10.4M17.4 7.3 14 10.4M6.6 16.7 10 13.6M17.4 16.7 14 13.6"/>
+            </svg>
+          </div>
+          <span class="tag">AI 匹配</span>
+        </div>
+        <h3>普耀 · 星火引力</h3>
+        <p>商业资源对接平台 · AI 大模型精准匹配</p>
+        <div class="card-foot">
+          <span class="host">xinghuoyinli.de5.net</span>
+          <span class="arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </span>
+        </div>
+      </a>
+
+      <a class="card" style="--accent:#06b6d4" href="?to=songshan">
+        <div class="card-head">
+          <div class="icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+                 stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2.5 19h19L15 6.5l-3.4 6-2.4-3.6L2.5 19Z"/>
+              <path d="M11.2 19l2.6-4.2 2 2.8"/>
+            </svg>
+          </div>
+          <span class="tag">文旅</span>
+        </div>
+        <h3>嵩玉 · 嵩山人文志</h3>
+        <p> 天地之中· 嵩山文旅资源对接平台（AI 大模型精准匹配）</p>
+        <div class="card-foot">
+          <span class="host">adx5.github.io / lisongyue-songshan</span>
+          <span class="arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <p class="foot">© 2026 系统测试 · 演示入口</p>
+
+</main>
+
+</body>
 </html>
